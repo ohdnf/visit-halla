@@ -28,7 +28,12 @@ const fs = require('fs/promises');
     const fsData = await fs.readFile('./address_book.csv', {
       encoding: 'utf-8',
     });
-    const addressBook = fsData.split('\n').map((e) => e.split(','));
+    const addressBook = fsData.split('\n').reduce((prev, curr) => {
+      if (curr) {
+        prev.push(curr.split(','));
+      }
+      return prev;
+    }, []);
     if (!addressBook?.length) return; // 메시지 보낼 사람이 없음
     if (reserveCnt >= limitCnt) return; // 정원 초과
     // 예약 정원이 비었을 때 텔레그램 봇으로 예약 가능 메시지 보내기
